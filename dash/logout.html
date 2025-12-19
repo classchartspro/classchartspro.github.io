@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/x-icon" href="/cdn/img/Logo.png">
+    <title>logout | ClassCharts Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" id="theme-css" href="/cdn/css/basic-dark.css">
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem("ccp-theme") || "basic-dark";
+            const customCSS = localStorage.getItem("ccp-custom-css");
+
+            const link = document.getElementById("theme-css");
+            if (savedTheme !== "basic-dark") link.href = `/cdn/css/${savedTheme}.css`;
+
+            if (savedTheme === "custom" && customCSS) {
+                document.getElementById("custom-theme").textContent = customCSS;
+            }
+
+            window.addEventListener("load", () => {
+                document.body.style.visibility = "visible";
+                document.body.style.display = "block";
+            });
+        })();
+    </script>
+</head>
+<body>
+    <!-- MAIN CONTENT -->
+    <div class="container" id="main-content">
+        <h1 class="title">Logging out...</h1>
+        <h2 class="tagline">Please wait, you will be redirected automatically</h2>
+    </div>
+    <script>
+        const expireDate = new Date('1970-01-01T00:00:00Z').toUTCString();
+        document.cookie = `session=cleared; path=/; expires=${expireDate}; SameSite=Lax`;
+
+        window.location.href = `/login.html`
+    </script>
+</body>

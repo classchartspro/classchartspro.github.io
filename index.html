@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/x-icon" href="/cdn/img/Logo.png">
+    <title>Home | ClassCharts Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" id="theme-css" href="/cdn/css/basic-dark.css">
+    <script src="/cdn/js/theme.js"></script>
+    <script src="/cdn/js/disclaimer.js"></script>
+    <script src="/cdn/js/version.js"></script>
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem("ccp-theme") || "basic-dark";
+            const customCSS = localStorage.getItem("ccp-custom-css");
+
+            const link = document.getElementById("theme-css");
+            if (savedTheme !== "basic-dark") link.href = `/cdn/css/${savedTheme}.css`;
+
+            if (savedTheme === "custom" && customCSS) {
+                document.getElementById("custom-theme").textContent = customCSS;
+            }
+
+            window.addEventListener("load", () => {
+                document.body.style.visibility = "visible";
+                document.body.style.display = "block";
+            });
+        })();
+    </script>
+</head>
+<body style="visibility: hidden;">
+    <disclaimer id="disclaimer">
+        <div class="disclaimer-content">
+            <h1 class="header">DISCLAIMER</h1>
+            <p>
+                ClassCharts Pro is an unofficial, student only application not affiliated with or endorsed by
+                ClassCharts.
+                Use this app at your own risk. Your login information is stored locally and never shared.
+            </p>
+            <a id="disclaimer-agree" class="disclaimer-agree">I Understand</a>
+        </div>
+    </disclaimer>
+
+    <div class="container" id="main-content">
+
+        <h1 class="title">ClassCharts Pro</h1>
+
+        <h2 class="tagline">A smoother way to view your ClassCharts info.</h2>
+
+        <a class="btn" href="/login.html">Log in</a>
+
+        <section class="features">
+            <div class="feature-card">
+                <h3>Better Looking</h3>
+                <p>Modern UI that doesn't want to make you burn your eyes out</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3>Make it your own</h3>
+                <p>Use preset custom themes or make your own</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Multi-account switcher</h3>
+                <p>Up to 3 accounts on one device!</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Privacy focus</h3>
+                <p>Centered around privacy, add a PIN lock to protect your app</p>
+            </div>
+        </section>
+
+        <section class="screenshots">
+            <h2>Preview</h2>
+            <div class="shot-row">
+                <img src="/cdn/img/home/preview1.png" class="shot">
+                <img src="/cdn/img/home/preview2.png" class="shot">
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Made by students, for students</p>
+            <p id="versioninfo" class="version"></p>
+        </footer>
+    </div>
+</body>

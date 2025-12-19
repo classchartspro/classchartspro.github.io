@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/x-icon" href="/cdn/img/Logo.png">
+    <title>Home | ClassCharts Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" id="theme-css" href="/cdn/css/basic-dark.css">
+    <script src="/cdn/js/disclaimer.js"></script>
+    <script src="/cdn/js/version.js"></script>
+    <script src="/cdn/js/theme.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem("ccp-theme") || "basic-dark";
+            const customCSS = localStorage.getItem("ccp-custom-css");
+
+            const link = document.getElementById("theme-css");
+            if (savedTheme !== "basic-dark") link.href = `/cdn/css/${savedTheme}.css`;
+
+            if (savedTheme === "custom" && customCSS) {
+                document.getElementById("custom-theme").textContent = customCSS;
+            }
+
+            window.addEventListener("load", () => {
+                document.body.style.visibility = "visible";
+                document.body.style.display = "block";
+            });
+        })();
+    </script>
+</head>
+<body class="dash-page">
+    <!-- DISCLAIMER -->
+    <disclaimer id="disclaimer">
+        <div class="disclaimer-content">
+            <h1 class="header">DISCLAIMER</h1>
+            <p>
+                ClassCharts Pro is an unofficial, student-only application not affiliated with or endorsed by
+                ClassCharts. Use this app at your own risk. Your login information is stored locally and never shared.
+            </p>
+            <a id="disclaimer-agree" class="disclaimer-agree">I Understand</a>
+        </div>
+    </disclaimer>
+    <!---->
+    <nav class="sidebar">
+        <h1 class="navHeader">ClassCharts Pro</h1>
+        <a data-feature="behaviour" href="/dash/">Behaviour</a>
+        <a data-feature="homework" href="#">Homework</a>
+        <a data-feature="rewards" href="#">Rewards</a>
+        <a data-feature="detentions" href="#">Detentions</a>
+        <a data-feature="classes" href="#">Classes</a>
+        <a data-feature="announcements" href="#">Announcements</a>
+        <a data-feature="attendance" href="#">Attendance</a>
+        <a data-feature="timetable" href="#">Timetable</a>
+        <a data-feature="badges" href="#">Badges</a>
+        <a data-feature="logout" href="/dash/logout.html">Log Out</a>
+        <a data-feature="mycode" href="#">My Code</a>
+        <a data-feature="config" href="/dash/config.html">Config</a>
+    </nav>
+    <nav class="bottom-bar">
+        <div class="bottom-scroll">
+            <a data-feature="behaviour" href="/dash/">Behaviour</a>
+            <a data-feature="homework" href="#">Homework</a>
+            <a data-feature="rewards" href="#">Rewards</a>
+            <a data-feature="detentions" href="#">Detentions</a>
+            <a data-feature="classes" href="#">Classes</a>
+            <a data-feature="announcements" href="#">Announcements</a>
+            <a data-feature="attendance" href="#">Attendance</a>
+            <a data-feature="timetable" href="#">Timetable</a>
+            <a data-feature="badges" href="#">Badges</a>
+            <a data-feature="logout" href="/dash/logout.html">Log Out</a>
+            <a data-feature="mycode" href="#">My Code</a>
+            <a data-feature="config" href="/dash/config.html">Config</a>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="container" id="main-content">
+
+        <footer class="footer">
+            <p id="versioninfo" class="version"></p>
+        </footer>
+    </div>
+    <script src="/cdn/js/dash/dash.js"></script>
+    <script src="/cdn/js/dash/behaviour.js"></script>
+</body>

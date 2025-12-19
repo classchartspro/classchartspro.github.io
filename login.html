@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/x-icon" href="/cdn/img/Logo.png">
+    <title>Login | ClassCharts Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" id="theme-css" href="/cdn/css/basic-dark.css">
+    <script src="/cdn/js/theme.js"></script>
+    <script src="/cdn/js/disclaimer.js"></script>
+    <script src="/cdn/js/version.js"></script>
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem("ccp-theme") || "basic-dark";
+            const customCSS = localStorage.getItem("ccp-custom-css");
+
+            const link = document.getElementById("theme-css");
+            if (savedTheme !== "basic-dark") link.href = `/cdn/css/${savedTheme}.css`;
+
+            if (savedTheme === "custom" && customCSS) {
+                document.getElementById("custom-theme").textContent = customCSS;
+            }
+
+            window.addEventListener("load", () => {
+                document.body.style.visibility = "visible";
+                document.body.style.display = "block";
+            });
+        })();
+    </script>
+</head>
+<body class="login-page">
+    <disclaimer id="disclaimer">
+        <div class="disclaimer-content">
+            <h1 class="header">DISCLAIMER</h1>
+            <p>
+                ClassCharts Pro is an unofficial, student only application not affiliated with or endorsed by
+                ClassCharts.
+                Use this app at your own risk. Your login information is stored locally and never shared.
+            </p>
+            <a id="disclaimer-agree" class="disclaimer-agree">I Understand</a>
+        </div>
+    </disclaimer>
+    
+    <div class="container" id="main-content">
+        <div class="login-card">
+            <h1 class="title">Login</h1>
+            <p class="login-sub">Sign in to classcharts pro</p>
+            
+            <form id="loginForm" autocomplete="off">
+                <input type="text" id="code" placeholder="Enter code" required>
+                
+                <div id="dobContainer">
+                    <input class="dobinput" type="number" id="dobd" placeholder="DD" required>
+                    <input class="dobinput" type="number" id="dobm" placeholder="MM" required>
+                    <input class="dobinput" type="number" id="doby" placeholder="YYYY" required>
+                </div>
+                
+                <button id="submitbtn" class="login-btn" type="submit">Sign In</button>
+            </form>
+            
+            <p class="login-note"><a href="help.html">Help</a></p>
+        </div>
+        
+        <footer class="footer">
+            <p id="versioninfo" class="version"></p>
+        </footer>
+    </div>
+    <script src="/cdn/js/login.js"></script>
+</body>

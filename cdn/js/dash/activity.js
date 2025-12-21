@@ -8,7 +8,6 @@ function getCookie(name) {
 document.addEventListener('DOMContentLoaded', async () => {
     const session = getCookie('session');
     if (!session) {
-        console.error('No session cookie');
         return;
     }
 

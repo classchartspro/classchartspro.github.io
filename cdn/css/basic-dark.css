@@ -113,7 +113,7 @@ body::before {
     50% { transform: translate(-10%, -10%); }
 }
 
-#main-content {
+#dash-content {
     margin-left: 240px;
     padding: 20px;
     transition: margin-left var(--transition-slow);
@@ -230,70 +230,12 @@ disclaimer p {
     font-weight: 900;
     letter-spacing: -1.5px;
     margin-top: var(--spacing-xl);
-    background: linear-gradient(135deg, var(--text-color) 0%, var(--accent-light) 50%, var(--accent) 100%);
+    background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-shadow: none;
     text-align: center;
-}
-
-/*-------- DARK MODE BUTTON -------------*/
-
-.darkmode-btn {
-    display: none;
-    position: fixed;
-    bottom: 80px;
-    left: 30px;
-    border-radius: var(--radius-full);
-    width: 56px;
-    height: 56px;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid var(--border-color);
-    cursor: pointer;
-    background: var(--card-bg);
-    box-shadow: var(--shadow-md);
-    transition: all var(--transition-base);
-    z-index: 9999;
-    backdrop-filter: blur(10px);
-}
-
-.darkmode-btn:hover {
-    transform: scale(1.15) rotate(15deg);
-    box-shadow: var(--shadow-lg), var(--shadow-glow);
-    border-color: var(--border-color-hover);
-}
-
-.darkmode-img {
-    width: 26px;
-    height: 26px;
-    position: absolute;
-    transition: opacity var(--transition-base), transform var(--transition-base);
-}
-
-.hidden {
-    display: none;
-}
-
-[data-theme="dark"] #darkmode-icon {
-    opacity: 0;
-    transform: rotate(-180deg);
-}
-
-[data-theme="dark"] #lightmode-icon {
-    opacity: 1;
-    transform: rotate(0deg);
-}
-
-#lightmode-icon {
-    opacity: 0;
-    transform: rotate(180deg);
-}
-
-#darkmode-icon {
-    opacity: 1;
-    transform: rotate(0deg);
 }
 
 /*-------- GENERAL ELEMENTS -------------*/
@@ -331,7 +273,7 @@ disclaimer p {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, var(--accent-light), transparent);
     transition: left 0.5s ease;
 }
 
@@ -340,10 +282,9 @@ disclaimer p {
 }
 
 .btn:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: var(--shadow-lg), 0 0 30px var(--accent-glow);
+    transform: translateY(-2px) scale(1.001);
+    box-shadow: var(--shadow-lg), 0 0 20px var(--accent-glow);
 }
-
 
 /*-------- FEATURES GRID -------------*/
 
@@ -386,7 +327,7 @@ disclaimer p {
 }
 
 .feature-card:hover {
-    transform: translateY(-8px);
+    transform: translateY(-7px);
     box-shadow: var(--shadow-lg), 0 0 30px var(--accent-glow);
     border-color: var(--border-color-hover);
 }
@@ -528,6 +469,10 @@ disclaimer p {
     color: var(--text-secondary);
     font-size: var(--font-size-sm);
     border-top: 1px solid var(--border-color);
+}
+
+.footer a {
+    color: var(--text-secondary);
 }
 
 .footer .version {
@@ -731,7 +676,96 @@ disclaimer p {
     }
 }
 
+/*-------- POPUP -------------*/
+
+popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    width: 100%;
+    max-width: 520px;
+    padding: var(--spacing-lg);
+    z-index: 9990;
+    animation: popupSlideIn var(--transition-slow) cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.popup-content {
+    background: var(--card-bg);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    border: 2px solid var(--border-color);
+    text-align: center;
+    backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+}
+
+.popup-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.5;
+}
+
+popup .header {
+    font-size: var(--font-size-xl);
+    font-weight: 800;
+    margin: 0 0 var(--spacing-sm) 0;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--text-color) 0%, var(--accent-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+popup p {
+    font-size: var(--font-size-base);
+    line-height: 1.7;
+    margin: var(--spacing-md) 0 var(--spacing-lg);
+    color: var(--text-secondary);
+}
+
+.popup-agree {
+    padding: var(--spacing-sm) var(--spacing-xl);
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+    color: #ffffff;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    border: none;
+    font-size: var(--font-size-base);
+    box-shadow: var(--shadow-md), 0 0 20px var(--accent-glow);
+    position: relative;
+    overflow: hidden;
+}
+
+.popup-agree:hover {
+    transform: translateY(-2px) scale(1.02);
+}
+
 /*-------- BEHAVIOUR DASH -------------*/
+
 .highcharts-background {
     fill: transparent;
 }
@@ -979,22 +1013,24 @@ disclaimer p {
     }
 }
 
-/* Bottom bar for smaller screens */
+
 .bottom-bar {
     display: none;
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    padding: var(--spacing-sm) 0;
+    height: calc(60px + env(safe-area-inset-bottom)); /* total bar height */
     overflow-x: auto;
     white-space: nowrap;
     z-index: 1000;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-    padding-bottom: var(--spacing-lg);
     border-top: 1px solid var(--border-color);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding-bottom: env(safe-area-inset-bottom);
 }
+
 
 .bottom-bar .bottom-scroll a {
     display: inline-block;

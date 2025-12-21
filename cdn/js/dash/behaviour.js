@@ -20,8 +20,7 @@ function setCookie(name, value) {
 document.addEventListener('DOMContentLoaded', async () => {
   let session = getCookie('session');
   if (!session) {
-    console.error('No session cookie found.');
-    return;
+    return null;
   }
 
   const proxyBase = 'https://api.classchartspro.qzz.io/?url=';
@@ -103,7 +102,6 @@ function getFilterDates(filter) {
 async function fetchBehaviorData(from, to) {
   let session = getCookie('session');
   if (!session) { 
-    console.error('No session cookie'); 
     return null; 
   }
 

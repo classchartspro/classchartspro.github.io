@@ -1,31 +1,13 @@
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
-    <link rel="shortcut icon" type="image/x-icon" href="/cdn/img/Logo.png">
+    <link rel="shortcut icon" type="image/x-icon" href="/cdn/img/LogoTB.png">
     <title>Home | ClassCharts Pro</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" id="theme-css" href="/cdn/css/basic-dark.css">
     <script src="/cdn/js/theme.js"></script>
     <script src="/cdn/js/disclaimer.js"></script>
     <script src="/cdn/js/version.js"></script>
-    <script>
-        (function () {
-            const savedTheme = localStorage.getItem("ccp-theme") || "basic-dark";
-            const customCSS = localStorage.getItem("ccp-custom-css");
-
-            const link = document.getElementById("theme-css");
-            if (savedTheme !== "basic-dark") link.href = `/cdn/css/${savedTheme}.css`;
-
-            if (savedTheme === "custom" && customCSS) {
-                document.getElementById("custom-theme").textContent = customCSS;
-            }
-
-            window.addEventListener("load", () => {
-                document.body.style.visibility = "visible";
-                document.body.style.display = "block";
-            });
-        })();
-    </script>
 </head>
 <body style="visibility: hidden;">
     <disclaimer id="disclaimer">
@@ -44,7 +26,7 @@
 
         <h1 class="title">ClassCharts Pro</h1>
 
-        <h2 class="tagline">A smoother way to view your ClassCharts info.</h2>
+        <h2 class="tagline">A nicer way to view your ClassCharts info.</h2>
 
         <a class="btn" href="/login.html">Log in</a>
 
@@ -66,7 +48,7 @@
 
             <div class="feature-card">
                 <h3>Privacy focus</h3>
-                <p>Centered around privacy, add a PIN lock to protect your app</p>
+                <p>Centered around privacy, directly interacts with the official classcharts website, no data is stored</p>
             </div>
         </section>
 
@@ -80,6 +62,7 @@
 
         <footer class="footer">
             <p>Made by students, for students</p>
+            <a href="mailto:contact@classchartspro.qzz.io">Contact me</a>
             <p id="versioninfo" class="version"></p>
         </footer>
     </div>

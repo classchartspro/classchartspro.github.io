@@ -106,3 +106,20 @@ if (themeUpdateDiv) {
         }
     });
 }
+
+(function () {
+    const savedTheme = localStorage.getItem("ccp-theme") || "basic-dark";
+    const customCSS = localStorage.getItem("ccp-custom-css");
+
+    const link = document.getElementById("theme-css");
+    if (savedTheme !== "basic-dark") link.href = `/cdn/css/${savedTheme}.css`;
+
+    if (savedTheme === "custom" && customCSS) {
+        document.getElementById("custom-theme").textContent = customCSS;
+    }
+
+    window.addEventListener("load", () => {
+        document.body.style.visibility = "visible";
+        document.body.style.display = "block";
+    });
+})();

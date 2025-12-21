@@ -32,8 +32,8 @@
     </div>
     <script>
         const expireDate = new Date('1970-01-01T00:00:00Z').toUTCString();
-        document.cookie = `session=cleared; path=/; expires=${expireDate}; SameSite=Lax`;
-
-        window.location.href = `/login.html`
+        document.cookie = `session=cleared; path=/; expires=${expireDate}; SameSite=Lax`; // remove session token by making it expire ~55 years ago
+        localStorage.clear() // clear code, dob, nav perms and pupil id
+        window.location.href = `/login.html` // login again
     </script>
 </body>

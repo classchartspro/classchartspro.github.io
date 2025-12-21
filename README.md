@@ -1,3 +1,6 @@
 # ClassChartsPro
 
-### A cute frontend for classcharts with themes and other cool features
+### A good looking frontend for classcharts with themes and other cool features
+
+---
+

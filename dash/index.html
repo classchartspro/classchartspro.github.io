@@ -1,34 +1,21 @@
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
-    <link rel="shortcut icon" type="image/x-icon" href="/cdn/img/Logo.png">
+    <link rel="shortcut icon" type="image/x-icon" href="/cdn/img/LogoTB.png">
+    <link rel="apple-touch-icon" type="image/x-icon" href="/cdn/img/LogoTB.png">
     <title>Home | ClassCharts Pro</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="stylesheet" id="theme-css" href="/cdn/css/basic-dark.css">
     <script src="/cdn/js/disclaimer.js"></script>
     <script src="/cdn/js/version.js"></script>
     <script src="/cdn/js/theme.js"></script>
+    <script src="/cdn/js/dash/handleLogouts.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script>
-        (function () {
-            const savedTheme = localStorage.getItem("ccp-theme") || "basic-dark";
-            const customCSS = localStorage.getItem("ccp-custom-css");
-
-            const link = document.getElementById("theme-css");
-            if (savedTheme !== "basic-dark") link.href = `/cdn/css/${savedTheme}.css`;
-
-            if (savedTheme === "custom" && customCSS) {
-                document.getElementById("custom-theme").textContent = customCSS;
-            }
-
-            window.addEventListener("load", () => {
-                document.body.style.visibility = "visible";
-                document.body.style.display = "block";
-            });
-        })();
-    </script>
 </head>
 <body class="dash-page">
+    
     <!-- DISCLAIMER -->
     <disclaimer id="disclaimer">
         <div class="disclaimer-content">
@@ -40,6 +27,15 @@
             <a id="disclaimer-agree" class="disclaimer-agree">I Understand</a>
         </div>
     </disclaimer>
+    <popup id="popup">
+        <div class="popup-content">
+            <h1 class="header">{{ popup.Header }}</h1>
+            <p>
+                {{ popup.body }}
+            </p>
+            <a id="popup-agree" class="popup-agree">{{ popup.Btn }}</a>
+        </div>
+    </popup>
     <!---->
     <nav class="sidebar">
         <h1 class="navHeader">ClassCharts Pro</h1>

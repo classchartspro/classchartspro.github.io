@@ -1,32 +1,16 @@
 <!DOCTYPE html>
-
 <head>
     <meta charset="UTF-8">
-    <link rel="shortcut icon" type="image/x-icon" href="/cdn/img/Logo.png">
-    <title>Login | ClassCharts Pro</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="/cdn/img/LogoTB.png">
+    <link rel="apple-touch-icon" type="image/x-icon" href="/cdn/img/LogoTB.png">
+    <title>Home | ClassCharts Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="stylesheet" id="theme-css" href="/cdn/css/basic-dark.css">
-    <script src="/cdn/js/theme.js"></script>
     <script src="/cdn/js/disclaimer.js"></script>
     <script src="/cdn/js/version.js"></script>
-    <script>
-        (function () {
-            const savedTheme = localStorage.getItem("ccp-theme") || "basic-dark";
-            const customCSS = localStorage.getItem("ccp-custom-css");
-
-            const link = document.getElementById("theme-css");
-            if (savedTheme !== "basic-dark") link.href = `/cdn/css/${savedTheme}.css`;
-
-            if (savedTheme === "custom" && customCSS) {
-                document.getElementById("custom-theme").textContent = customCSS;
-            }
-
-            window.addEventListener("load", () => {
-                document.body.style.visibility = "visible";
-                document.body.style.display = "block";
-            });
-        })();
-    </script>
+    <script src="/cdn/js/theme.js"></script>
 </head>
 <body class="login-page">
     <disclaimer id="disclaimer">
@@ -47,16 +31,23 @@
             <p class="login-sub">Sign in to classcharts pro</p>
             
             <form id="loginForm" autocomplete="off">
-                <input type="text" id="code" placeholder="Enter code" required>
+                <input type="text" id="code" placeholder="Enter code" minlength="7" maxlength="10" required>
                 
-                <div id="dobContainer">
-                    <input class="dobinput" type="number" id="dobd" placeholder="DD" required>
-                    <input class="dobinput" type="number" id="dobm" placeholder="MM" required>
-                    <input class="dobinput" type="number" id="doby" placeholder="YYYY" required>
+                <div id="dobContainer" style="display:none;">
+                    <input class="dobinput" type="text" id="dobd" maxlength="2" placeholder="DD" required>
+                    <input class="dobinput" type="text" id="dobm" maxlength="2" placeholder="MM" required>
+                    <input class="dobinput" type="text" id="doby" maxlength="4" placeholder="YYYY" required>
                 </div>
-                
+
+                <!-- Loading / warning box -->
+                <div id="loginStatus" style="display:none;">
+                    <img id="loadingGif" src="/cdn/img/loading.gif" alt="Loading" style="width:32px;height:32px;">
+                    <p id="statusText"></p>
+                </div>
+
                 <button id="submitbtn" class="login-btn" type="submit">Sign In</button>
             </form>
+
             
             <p class="login-note"><a href="help.html">Help</a></p>
         </div>

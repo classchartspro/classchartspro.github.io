@@ -12,8 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const base = 'https://api.classchartspro.qzz.io/?url=';
 
     if (!session) {
-        console.error("No session cookie found.");
-        return;
+        return null;
     }
 
     try {

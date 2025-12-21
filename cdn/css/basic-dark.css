@@ -1020,15 +1020,13 @@ popup p {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: calc(60px + env(safe-area-inset-bottom)); /* total bar height */
+    padding: var(--spacing-sm) 0;
     overflow-x: auto;
     white-space: nowrap;
     z-index: 1000;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-    border-top: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-lg); border-top: 1px solid var(--border-color);
     backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    padding-bottom: env(safe-area-inset-bottom);
 }
 
 

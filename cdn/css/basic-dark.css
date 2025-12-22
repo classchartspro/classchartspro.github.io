@@ -78,6 +78,10 @@
 }
 
 /*-------- GLOBAL STYLES -------------*/
+html {
+    background: var(--bg-color);
+}
+
 body {
     display: none;
     visibility: hidden;

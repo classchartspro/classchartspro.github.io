@@ -1020,6 +1020,7 @@ popup p {
 
 .bottom-bar {
     display: none;
+    background-color: #11111101;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -1029,7 +1030,8 @@ popup p {
     white-space: nowrap;
     z-index: 1000;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
-    padding-bottom: var(--spacing-lg); border-top: 1px solid var(--border-color);
+    padding-bottom: env(safe-area-inset-bottom); 
+    border-top: 1px solid var(--border-color);
     backdrop-filter: blur(20px);
 }
 

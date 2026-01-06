@@ -1,207 +1,134 @@
-/*
-    Handlelogin.js
-    This file handles logouts like how the api after 24 hours of no pings invalidates you
-    
-    This will use stored creds in localStorage to log back in in the background
-    uh this is very stupid. but it works? good enough
-*/
+// handleLogouts.js
+// Handles session validation, offline detection, and background login
 
-
-function getCookie(name) {
-    const value = "; " + document.cookie;
-    const parts = value.split("; " + name + "=");
-    if (parts.length === 2) return parts.pop().split(";").shift();
-}
-
-/*
-    This is a double whammy, it fixes users that are actually offline AND if the api goes down for any reason
-*/
-async function checkOnline() { // it obviously cannot work offline, check
-    try {
-        const response = await fetch("https://api.classchartspro.qzz.io/ping", { cache: "no-store" }); // ping it
-
-        if (!response.ok) { // check if it returns a 200
-            showOfflinePopup();
-            return false;
-        }
-
-        const data = await response.json();
-        if (data.pong !== true) { // checks if the response also contains pong: "true"
-            showOfflinePopup();
-            return false;
-        }
-
-        return true;
-
-    } catch (error) {
-        showOfflinePopup();
+export async function checkSession() {
+    const session = getCookie('session');
+    if (!session) {
+        console.warn('No session token found.');
         return false;
     }
 
-    function showOfflinePopup() { // this is Ctrl+C, Ctrl+V of the disclaimer popup, with a nice name lol
-        const popup = document.getElementById("popup");             
-        const mainContent = document.getElementById("main-content");
-        if (!popup) return;                                         
-                                                                
-        const header = popup.querySelector("h1");                   
-        if (header) header.textContent = "Warning";                 
-        const paragraph = popup.querySelector("p");                 
-        if (paragraph) paragraph.textContent = "You are offline";   
-        const btn = popup.querySelector("a");                       
-        if (btn) btn.textContent = "Okay!";                         
-                                                                
-        popup.style.display = "block";                              
-        mainContent.classList.add("blur");                          
-                                                                
-        const agreeBtn = popup.querySelector("#popup-agree");       
-        if (agreeBtn) {                                             
-            agreeBtn.addEventListener("click", () => {              
-                popup.style.display = "none";                       
-                mainContent.classList.remove("blur");               
-            });                                                     
-        }
+    const online = await isOnline();
+    if (!online) return false;
+
+    const valid = await validateSession(session);
+    if (!valid) {
+        return await attemptBackgroundLogin();
     }
 
+    return true;
 }
 
-(async function () {
-    let session = getCookie('session'); // first get the session token, this is stored in the cookies
+// ----------------- Helpers -----------------
 
-    if (!session) { // if no session token exists, we may have been logged out
-        console.log("%cSESSION MANAGER%c No session token, skipping ping", 
-            "background: #0004ffff; border-radius: 20px; color: white; padding: 2px 4px;", 
-            "color: white;"
-        );
-    } else { // else we are logged in, test the session
-        console.log("%cSESSION MANAGER%c Ping with existing session", 
-            "background: #0004ffff; border-radius: 20px; color: white; padding: 2px 4px;", 
-            "color: white;"
-        );
-        
-        if (await checkOnline()) {
-            console.log("%cSESSION MANAGER%c Online, able to ping", 
-                "background: #0004ffff; border-radius: 20px; color: white; padding: 2px 4px;", 
-                "color: white;"
-            );
-        } else {
-            console.warn("%cSESSION MANAGER%c Offline, Cannot ping", 
-                "background: #0004ffff; border-radius: 20px; color: white; padding: 2px 4px;", 
-                "color: white;"
-            );
+function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? match[2] : null;
+}
+
+function setCookie(name, value) {
+    document.cookie = `${name}=${value}; path=/`;
+}
+
+// Check if API is reachable
+async function isOnline() {
+    try {
+        const response = await fetch('https://api.classchartspro.qzz.io/ping', { cache: 'no-store' });
+        const data = await response.json();
+        if (!response.ok || data.pong !== true) {
+            showOfflinePopup();
+            return false;
         }
-
-        try {
-            let response = await fetch(
-                `https://api.classchartspro.qzz.io/?url=https://www.classcharts.com/apiv2student/ping`, // ping the api again to check if we are logged in
-                { headers: { Authorization: "Basic " + session } }
-            );
-
-            let data = await response.json(); // make it json bc why not
-
-            if (data.success === 1) { // if success is 1, we are in boys
-                console.log("%cSESSION MANAGER%c Already logged in, nothing to do", 
-                    "background: #0004ffff; border-radius: 20px; color: white; padding: 2px 4px;", 
-                    "color: white;"
-                );
-                return;
-            } else {
-                console.log("%cSESSION MANAGER%c Didn't get 1 status, may have been logged out.", 
-                    "background: #0004ffff; border-radius: 20px; color: white; padding: 2px 4px;", 
-                    "color: white;"
-                );
-            }
-        } catch (error) { // oh no
-            console.error(`%cSESSION MANAGER%cError pinging session%c ${error}`,
-                "background: #0004ffff; color: white; border-radius: 20px 0px 0px 20px; padding: 2px 4px;",
-                "background: #ff0000ff; color: white; border-radius: 0 20px 20px 0; padding: 2px 4px;",
-                "color: white;"
-            );
-        }
+        return true;
+    } catch (err) {
+        showOfflinePopup();
+        return false;
     }
+}
 
-    // continue only if (you dare) not logged in
-    let code = localStorage.getItem("code");
-    let dob = localStorage.getItem("dob");
+// Show a simple offline popup
+function showOfflinePopup() {
+    const popup = document.getElementById('popup');
+    const main = document.getElementById('main-content');
+    if (!popup || !main) return;
 
-    if (!code || !dob) { // this checks if we have both the code and the dob stored in the browser's localStorage
-        console.log(
-            "%cSESSION MANAGER%cCRITICAL ERROR%c Either dob or code is not stored\nRedirecting to login",
-            "background: #0004ffff; color: white; border-radius: 20px 0px 0px 20px; padding: 2px 4px;",
-            "background: #ff0000ff; color: white; border-radius: 0 20px 20px 0; padding: 2px 4px;",
-            "color: white;"
-        );
-        window.location.href = `/dash/logout.html` // log out
-    }
+    popup.style.display = 'block';
+    main.classList.add('blur');
 
-    try { // we are ready to try with cached login creds
-        let response = await fetch(
-            `https://api.classchartspro.qzz.io/?url=https://www.classcharts.com/student/checkpupilcode/${code}` // check the code
-        );
-        let data = await response.json();
+    const header = popup.querySelector('h1');
+    const paragraph = popup.querySelector('p');
+    const btn = popup.querySelector('a');
 
-        if (data.success === 1 && data.data.has_dob) {
-            console.log("%cSESSION MANAGER%c Stored pupil code cookie is valid!", 
-                "background: #0004ffff; border-radius: 20px; color: white; padding: 2px 4px;", 
-                "color: white;"
-            );
-            login(code, dob)
-        } else {
-            // ah, thats somehow wrong. logout
-            window.location.href = `/dash/logout.html`
-        }
-    } catch (error) {
-        console.error(`%cSESSION MANAGER%cError fetching session%c ${error}`,
-            "background: #0004ffff; color: white; border-radius: 20px 0px 0px 20px; padding: 2px 4px;",
-            "background: #ff0000ff; color: white; border-radius: 0 20px 20px 0; padding: 2px 4px;",
-            "color: white;"
-        );
-    }
-})();
+    if (header) header.textContent = 'Warning';
+    if (paragraph) paragraph.textContent = 'You are offline';
+    if (btn) btn.textContent = 'Okay!';
 
-// this is copied from /cdn/js/login.js but is 
-// modified to be a backend version
-function login(code, dob) {
-    const payload = new URLSearchParams({
-        code,
-        dob,
-        "recaptcha-token": "no-token-available"
-    });
-
-    fetch("https://api.classchartspro.qzz.io/login", { // login again
-        method: "POST",
-        body: payload,
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
-    }) 
-        .then(res => res.json()) // cast to json
-        .then(data => {
-            handleLoginRes(data, code, dob); // handle frontend login
-        })
-        .catch(err => { // aw dude
-            console.error(`%cSESSION MANAGER%cError fetching session%c ${err}`,
-                "background: #0004ffff; color: white; border-radius: 20px 0px 0px 20px; padding: 2px 4px;",
-                "background: #ff0000ff; color: white; border-radius: 0 20px 20px 0; padding: 2px 4px;",
-                "color: white;"
-            );
+    const agreeBtn = popup.querySelector('#popup-agree');
+    if (agreeBtn) {
+        agreeBtn.addEventListener('click', () => {
+            popup.style.display = 'none';
+            main.classList.remove('blur');
         });
+    }
 }
 
-function handleLoginRes(response, code, dob) {
+// Validate existing session with API ping
+async function validateSession(session) {
+    try {
+        const resp = await fetch(`https://api.classchartspro.qzz.io/?url=https://www.classcharts.com/apiv2student/ping`, {
+            headers: { Authorization: 'Basic ' + session }
+        });
+        const data = await resp.json();
+        return data.success === 1;
+    } catch (err) {
+        console.error('Error validating session:', err);
+        return false;
+    }
+}
+
+// Attempt background login using stored localStorage creds
+async function attemptBackgroundLogin() {
+    const code = localStorage.getItem('code');
+    const dob = localStorage.getItem('dob');
+
+    if (!code || !dob) {
+        window.location.href = '/dash/logout.html';
+        return false;
+    }
+
+    try {
+        const payload = new URLSearchParams({
+            code,
+            dob,
+            'recaptcha-token': 'no-token-available'
+        });
+
+        const resp = await fetch('https://api.classchartspro.qzz.io/login', {
+            method: 'POST',
+            body: payload,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        });
+
+        const data = await resp.json();
+        return handleLoginResponse(data, code, dob);
+    } catch (err) {
+        console.error('Background login failed:', err);
+        return false;
+    }
+}
+
+function handleLoginResponse(response, code, dob) {
     if (response.success === 1) {
         const sessionToken = response.meta.session_id;
-
-        document.cookie = `session=${sessionToken}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+        setCookie('session', sessionToken);
 
         localStorage.setItem('code', code);
         localStorage.setItem('dob', dob);
 
         window.location.href = '/dash';
+        return true;
     } else {
-         console.error(`%cSESSION MANAGER%cLogin Failed%c ${response}`,
-            "background: #0004ffff; color: white; border-radius: 20px 0px 0px 20px; padding: 2px 4px;",
-            "background: #ff0000ff; color: white; border-radius: 0 20px 20px 0; padding: 2px 4px;",
-            "color: white;"
-        );
+        window.location.href = '/dash/logout.html';
+        return false;
     }
 }

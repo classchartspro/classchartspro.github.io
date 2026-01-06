@@ -1,86 +1,86 @@
+// dash.js
+// Main orchestrator for the /dash folder
+
+import { loadActivity } from './activity.js';
+import { loadBehavior } from './behaviour.js';
+import { checkSession } from './handleLogouts.js';
+
+// ----------------- Cookie helpers -----------------
 function getCookie(name) {
-    const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
     return match ? match[2] : null;
 }
 
-function setCookie(name, value) {
-    document.cookie = name + "=" + value + "; path=/";
+// ----------------- Menu logic -----------------
+const FEATURE_MAP = {
+    behaviour: 'display_behaviour',
+    homework: 'display_homework',
+    rewards: 'display_rewards',
+    detentions: 'display_detentions',
+    classes: 'display_classes',
+    announcements: 'display_announcements',
+    attendance: 'display_attendance',
+    timetable: 'display_timetable',
+    badges: 'display_event_badges',
+    logout: null,
+    config: null,
+    mycode: null
+};
+const NAV_CACHE_KEY = 'nav_permissions_v1';
+
+function applyMenu(user, animate = false) {
+    document.querySelectorAll('[data-feature]').forEach(el => {
+        const flag = FEATURE_MAP[el.dataset.feature];
+        if (!flag) return;
+
+        if (!user[flag]) {
+            if (animate) {
+                el.classList.add('nav-hidden');
+                setTimeout(() => el.remove(), 120);
+            } else {
+                el.remove();
+            }
+        }
+    });
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-    const session = getCookie("session");
-    const base = 'https://api.classchartspro.qzz.io/?url=';
-
+// ----------------- Main Orchestration -----------------
+document.addEventListener('DOMContentLoaded', async () => {
+    const session = getCookie('session');
     if (!session) {
-        return null;
+        console.warn('No session found, cannot proceed.');
+        return;
     }
 
-    try {
-        // Ping API to get pupil info & possibly a new session
-        const pingResp = await fetch(base + encodeURIComponent("https://www.classcharts.com/apiv2student/ping"), {
-            headers: {
-                Authorization: "Basic " + session
-            }
-        });
+    const online = await checkSession();
+    if (!online) return;
 
+    // ----------------- Load user info from ping -----------------
+    try {
+        const base = 'https://api.classchartspro.qzz.io/?url=';
+        const pingResp = await fetch(base + encodeURIComponent('https://www.classcharts.com/apiv2student/ping'), {
+            headers: { Authorization: 'Basic ' + session }
+        });
         const pingData = await pingResp.json();
         const user = pingData?.data?.user;
         if (!user) {
-            console.error("No user data returned from ping");
+            console.error('No user data from ping');
             return;
         }
 
-        // Store globally for other scripts if needed
+        // Save user globally if needed
         window.dashUser = user;
 
-        // Update session if the API provides a new one
-        const newSession = pingData?.meta?.session_id || session;
-        if (pingData?.meta?.session_id) {
-            localStorage.setItem("session", pingData.meta.session_id);
-        }
+        // Update session if a new one was returned
+        const newSession = pingData?.meta?.session_id;
+        if (newSession) localStorage.setItem('session', newSession);
 
-        // -------------------------
-        // Menu hiding logic
-        // -------------------------
-        const NAV_CACHE_KEY = 'nav_permissions_v1';
-        const FEATURE_MAP = {
-            behaviour: 'display_behaviour',
-            homework: 'display_homework',
-            rewards: 'display_rewards',
-            detentions: 'display_detentions',
-            classes: 'display_classes',
-            announcements: 'display_announcements',
-            attendance: 'display_attendance',
-            timetable: 'display_timetable',
-            badges: 'display_event_badges',
-            logout: null,
-            config: null,
-            mycode: null
-        };
-
-        function applyMenu(u, animate = false) {
-            document.querySelectorAll('[data-feature]').forEach(el => {
-                const flag = FEATURE_MAP[el.dataset.feature];
-                if (!flag) return;
-                if (!u[flag]) {
-                    if (animate) {
-                        el.classList.add('nav-hidden');
-                        setTimeout(() => el.remove(), 120);
-                    } else {
-                        el.remove();
-                    }
-                }
-            });
-        }
-
-        // Apply cached permissions first
+        // ----------------- Menu -----------------
         const cached = localStorage.getItem(NAV_CACHE_KEY);
         if (cached) applyMenu(JSON.parse(cached), false);
+        else applyMenu(user, true);
 
-        // Animate removals if first time
-        if (!cached) applyMenu(user, true);
-
-        // Background: update cache if anything changed
+        // Update cache if anything changed
         const cachedUser = cached ? JSON.parse(cached) : {};
         let changed = false;
         Object.keys(FEATURE_MAP).forEach(feature => {
@@ -98,7 +98,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         });
         if (changed) localStorage.setItem(NAV_CACHE_KEY, JSON.stringify(user));
+
+        // ----------------- Load modules -----------------
+        loadActivity();
+        loadBehavior('sinceAug');
+
     } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error('Error during dash orchestration:', err);
     }
 });

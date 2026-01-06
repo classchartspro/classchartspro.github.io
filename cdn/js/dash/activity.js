@@ -1,39 +1,37 @@
 // activity.js
+// Handles fetching and rendering the activity timeline
 
-function getCookie(name) {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    return match ? match[2] : null;
-}
-
-document.addEventListener('DOMContentLoaded', async () => {
+export async function loadActivity() {
     const session = getCookie('session');
-    if (!session) {
-        return;
-    }
+    if (!session) return;
 
     const proxyBase = 'https://api.classchartspro.qzz.io/?url=';
     const url = proxyBase + encodeURIComponent('https://www.classcharts.com/apiv2student/activity');
 
     const container = document.getElementById('timelineList');
+    if (!container) return;
+
     container.innerHTML = '<p class="loading">Loading activity...</p>';
 
     try {
         const resp = await fetch(url, {
             headers: { Authorization: 'Basic ' + session }
         });
-
         const data = await resp.json();
         const activityArray = data?.data || [];
-
         renderTimeline(activityArray);
     } catch (err) {
         console.error('Error fetching activity:', err);
         container.innerHTML = '<p class="error">Error loading activity</p>';
     }
-});
+}
+
+// ----------------- Helper functions -----------------
 
 function renderTimeline(activityArray) {
     const container = document.getElementById('timelineList');
+    if (!container) return;
+
     container.innerHTML = '';
 
     if (!activityArray || activityArray.length === 0) {
@@ -42,6 +40,7 @@ function renderTimeline(activityArray) {
     }
 
     const eventsByDate = {};
+
     activityArray.forEach(item => {
         const date = new Date(item.timestamp).toLocaleDateString('en-GB', { weekday:'long', day:'2-digit', month:'long' });
         if (!eventsByDate[date]) eventsByDate[date] = [];
@@ -97,4 +96,10 @@ function renderTimeline(activityArray) {
 
             container.appendChild(dayDiv);
         });
+}
+
+// ----------------- Cookie helper -----------------
+function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? match[2] : null;
 }

@@ -13,6 +13,7 @@
     <script src="/cdn/js/theme.js"></script>
     <script src="/cdn/js/dash/handleLogouts.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 </head>
 <body class="dash-page">
     
@@ -89,7 +90,7 @@
                 <div class="customDiv" id="customDates" style="display:none;">
                     <div class="date-row">
                         <label for="fromDate">From:</label>
-                        <input type="date" id="fromDate">
+                        <input type="date" id="fromDate" minlength="01-01-2000" maxlength="31-12-2100">
                     </div>
                     <div class="date-row">
                         <label for="toDate">To:</label>
@@ -100,12 +101,12 @@
             </div>
         </div>
 
-        <div id="behaviorContainer" style="width: 100%; max-width: 800px; margin: 0 auto; backdrop-filter: blur(10px);">
+        <div id="behaviorContainer" style="width: 100%; max-width: 800px; margin: 0 auto;">
             <!-- Donut chart -->
             <div id="behaviorChart" style="width: 100%; height: 400px; margin-bottom: 20px;"></div>
 
             <!-- Weekly activity table -->
-            <div id="behaviorTimeline" style="margin-top: 20px;">
+            <div id="behaviorTimeline" class="behaviorTimeline" style="margin-top: 20px;">
                 <h3>Activity</h3>
                 <div id="timelineList" style="display: flex; flex-direction: column; gap: 12px;"></div>
             </div>
@@ -117,6 +118,7 @@
 
     </div>
     <script src="/cdn/js/dash/dash.js"></script>
+    <script src="/cdn/js/dash/CORS.js"></script>
     <script src="/cdn/js/dash/behaviour.js"></script>
     <script src="/cdn/js/dash/activity.js"></script>
 </body>

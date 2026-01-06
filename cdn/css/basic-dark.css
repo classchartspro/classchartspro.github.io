@@ -103,7 +103,6 @@ body::before {
     width: 200%;
     height: 200%;
     background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.03) 0%, transparent 50%);
-    animation: gradientShift 50s ease infinite;
     pointer-events: none;
     z-index: 0;
 }
@@ -1007,7 +1006,7 @@ popup p {
 }
 
 /* Offset main content when sidebar is visible */
-@media (min-width: 1024px) {
+@media (min-width: 1300px) {
     #main-content.dash {
         margin-left: 240px;
     }
@@ -1040,7 +1039,7 @@ popup p {
 }
 
 /* Show bottom bar on smaller screens */
-@media (max-width: 1023px) {
+@media (max-width: 1300px) {
     .sidebar {
         display: none;
     }

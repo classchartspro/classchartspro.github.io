@@ -1,32 +1,19 @@
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
-    <link rel="shortcut icon" type="image/x-icon" href="/cdn/img/Logo.png">
-    <title>Home | ClassCharts Pro</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="/cdn/img/LogoTB.png">
+    <link rel="apple-touch-icon" type="image/x-icon" href="/cdn/img/LogoTB.png">
+    <title>Template | ClassCharts Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="stylesheet" id="theme-css" href="/cdn/css/basic-dark.css">
     <script src="/cdn/js/disclaimer.js"></script>
     <script src="/cdn/js/version.js"></script>
     <script src="/cdn/js/theme.js"></script>
+    <script src="/cdn/js/dash/handleLogouts.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script>
-        (function () {
-            const savedTheme = localStorage.getItem("ccp-theme") || "basic-dark";
-            const customCSS = localStorage.getItem("ccp-custom-css");
-
-            const link = document.getElementById("theme-css");
-            if (savedTheme !== "basic-dark") link.href = `/cdn/css/${savedTheme}.css`;
-
-            if (savedTheme === "custom" && customCSS) {
-                document.getElementById("custom-theme").textContent = customCSS;
-            }
-
-            window.addEventListener("load", () => {
-                document.body.style.visibility = "visible";
-                document.body.style.display = "block";
-            });
-        })();
-    </script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 </head>
 <body class="dash-page">
     <!-- DISCLAIMER -->
@@ -40,11 +27,20 @@
             <a id="disclaimer-agree" class="disclaimer-agree">I Understand</a>
         </div>
     </disclaimer>
+    <popup id="popup">
+        <div class="popup-content">
+            <h1 class="header">{{ popup.Header }}</h1>
+            <p>
+                {{ popup.body }}
+            </p>
+            <a id="popup-agree" class="popup-agree">{{ popup.Btn }}</a>
+        </div>
+    </popup>
     <!---->
     <nav class="sidebar">
         <h1 class="navHeader">ClassCharts Pro</h1>
         <a data-feature="behaviour" href="/dash/">Behaviour</a>
-        <a data-feature="homework" href="#">Homework</a>
+        <a data-feature="homework" href="/dash/homework.html">Homework</a>
         <a data-feature="rewards" href="#">Rewards</a>
         <a data-feature="detentions" href="#">Detentions</a>
         <a data-feature="classes" href="#">Classes</a>
@@ -56,10 +52,11 @@
         <a data-feature="mycode" href="#">My Code</a>
         <a data-feature="config" href="/dash/config.html">Config</a>
     </nav>
+
     <nav class="bottom-bar">
         <div class="bottom-scroll">
             <a data-feature="behaviour" href="/dash/">Behaviour</a>
-            <a data-feature="homework" href="#">Homework</a>
+            <a data-feature="homework" href="/dash/homework.html">Homework</a>
             <a data-feature="rewards" href="#">Rewards</a>
             <a data-feature="detentions" href="#">Detentions</a>
             <a data-feature="classes" href="#">Classes</a>
@@ -72,14 +69,20 @@
             <a data-feature="config" href="/dash/config.html">Config</a>
         </div>
     </nav>
+    <!---->
 
     <!-- MAIN CONTENT -->
     <div class="container" id="main-content">
 
+        <!-- MAIN CONTENT INSIDE HERE -->
+
         <footer class="footer">
             <p id="versioninfo" class="version"></p>
         </footer>
+
     </div>
     <script src="/cdn/js/dash/dash.js"></script>
+    <script src="/cdn/js/dash/CORS.js"></script>
     <script src="/cdn/js/dash/behaviour.js"></script>
+    <script src="/cdn/js/dash/activity.js"></script>
 </body>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/x-icon" href="/cdn/img/LogoTB.png">
+    <link rel="apple-touch-icon" type="image/x-icon" href="/cdn/img/LogoTB.png">
+    <title>Homework | ClassCharts Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="stylesheet" id="theme-css" href="/cdn/css/basic-dark.css">
+    <script src="/cdn/js/disclaimer.js"></script>
+    <script src="/cdn/js/version.js"></script>
+    <script src="/cdn/js/theme.js"></script>
+    <script src="/cdn/js/dash/handleLogouts.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+</head>
+
+<body class="dash-page">
+    <!-- DISCLAIMER -->
+    <disclaimer id="disclaimer">
+        <div class="disclaimer-content">
+            <h1 class="header">DISCLAIMER</h1>
+            <p>
+                ClassCharts Pro is an unofficial, student-only application not affiliated with or endorsed by
+                ClassCharts. Use this app at your own risk. Your login information is stored locally and never shared.
+            </p>
+            <a id="disclaimer-agree" class="disclaimer-agree">I Understand</a>
+        </div>
+    </disclaimer>
+    <popup id="popup">
+        <div class="popup-content">
+            <h1 class="header">{{ popup.Header }}</h1>
+            <p>
+                {{ popup.body }}
+            </p>
+            <a id="popup-agree" class="popup-agree">{{ popup.Btn }}</a>
+        </div>
+    </popup>
+    <!---->
+    <nav class="sidebar">
+        <h1 class="navHeader">ClassCharts Pro</h1>
+        <a data-feature="behaviour" href="/dash/">Behaviour</a>
+        <a data-feature="homework" href="/dash/homework.html">Homework</a>
+        <a data-feature="rewards" href="#">Rewards</a>
+        <a data-feature="detentions" href="#">Detentions</a>
+        <a data-feature="classes" href="#">Classes</a>
+        <a data-feature="announcements" href="#">Announcements</a>
+        <a data-feature="attendance" href="#">Attendance</a>
+        <a data-feature="timetable" href="#">Timetable</a>
+        <a data-feature="badges" href="#">Badges</a>
+        <a data-feature="logout" href="/dash/logout.html">Log Out</a>
+        <a data-feature="mycode" href="#">My Code</a>
+        <a data-feature="config" href="/dash/config.html">Config</a>
+    </nav>
+
+    <nav class="bottom-bar">
+        <div class="bottom-scroll">
+            <a data-feature="behaviour" href="/dash/">Behaviour</a>
+            <a data-feature="homework" href="/dash/homework.html">Homework</a>
+            <a data-feature="rewards" href="#">Rewards</a>
+            <a data-feature="detentions" href="#">Detentions</a>
+            <a data-feature="classes" href="#">Classes</a>
+            <a data-feature="announcements" href="#">Announcements</a>
+            <a data-feature="attendance" href="#">Attendance</a>
+            <a data-feature="timetable" href="#">Timetable</a>
+            <a data-feature="badges" href="#">Badges</a>
+            <a data-feature="logout" href="/dash/logout.html">Log Out</a>
+            <a data-feature="mycode" href="#">My Code</a>
+            <a data-feature="config" href="/dash/config.html">Config</a>
+        </div>
+    </nav>
+    <!---->
+
+    <!-- MAIN CONTENT -->
+    <div class="container" id="main-content">
+        <div class="behaviourHolder">
+            <div class="controls-row">
+                <select id="filterSelect">
+                    <option value="weekToMonth">Default</option>
+                    <option value="nextWeek">Next Week</option>  
+                    <option value="next30">Next 30 Days</option>
+                    <option value="next90">Next 90 Days</option>
+                    <option value="lastWeek">Last Week</option>
+                    <option value="last30">Last 30 Days</option>
+                    <option value="last90">Last 90 days</option>
+                    <option value="sinceAug">Since August</option>
+                    <option value="custom">Custom</option>
+                </select>
+
+                <div class="customDiv" id="customDates" style="display:none;">
+                    <div class="date-row">
+                        <label for="fromDate">From:</label>
+                        <input type="date" id="fromDate" min="2000-01-01" max="2100-12-31">
+                    </div>
+                    <div class="date-row">
+                        <label for="toDate">To:</label>
+                        <input type="date" id="toDate" min="2000-01-01" max="2100-12-31">
+                    </div>
+                    <button class="customApply" id="applyCustom">Apply</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="homework-tracker" id="homework-tracker">
+            <div class="loading" id="loading-state">
+                <span class="loader"></span>
+                <p style="margin-top: 12px;">Loading homework...</p>
+            </div>
+
+            <div class="homeworkInfo" id="homeworkInfo">
+                <div class="homeworkInfo-content">
+                    <span class="homeworkInfo-close" id="homeworkInfo-close">&times;</span>
+                    <h2 id="homeworkInfo-title">Homework Title</h2>
+                    <div id="homeworkInfo-details"></div>
+                </div>
+            </div>
+
+            <div id="homework-sections" style="display: none;">
+                <!-- To Do Section -->
+                <div class="homework-section">
+                    <div class="homework-header status-todo collapsed">
+                        <span>
+                            <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px; margin-right: 8px;">
+                                <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
+                            </svg>
+                            To Do
+                        </span>
+                        <span id="count-todo">0</span>
+                    </div>
+                    <div class="homework-content collapsed" id="content-todo">
+                        <table class="homework-table">
+                            <thead>
+                                <tr>
+                                    <th> </th>
+                                    <th>Homework Name</th>
+                                    <th>Teacher Name</th>
+                                    <th>Lesson</th>
+                                    <th>Subject</th>
+                                    <th>Issue Date</th>
+                                    <th>Due Date</th>
+                                    <th>Est Time</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-todo">
+                                <!-- Homework items will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Completed Section -->
+                <div class="homework-section">
+                    <div class="homework-header status-completed collapsed">
+                        <span>
+                            <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px; margin-right: 8px;">
+                                <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
+                            </svg>
+                            Completed
+                        </span>
+                        <span id="count-completed">0</span>
+                    </div>
+                    <div class="homework-content collapsed" id="content-completed">
+                        <table class="homework-table">
+                            <thead>
+                                <tr>
+                                    <th>More Info</th>
+                                    <th>Homework Name</th>
+                                    <th>Teacher Name</th>
+                                    <th>Lesson</th>
+                                    <th>Subject</th>
+                                    <th>Issue Date</th>
+                                    <th>Due Date</th>
+                                    <th>Est Time</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-completed">
+                                <!-- Homework items will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Submitted Late Section -->
+                <div class="homework-section">
+                    <div class="homework-header status-late collapsed">
+                        <span>
+                            <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px; margin-right: 8px;">
+                                <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
+                            </svg>
+                            Submitted Late
+                        </span>
+                        <span id="count-late">0</span>
+                    </div>
+                    <div class="homework-content collapsed" id="content-late">
+                        <table class="homework-table">
+                            <thead>
+                                <tr>
+                                    <th>More Info</th>
+                                    <th>Homework Name</th>
+                                    <th>Teacher Name</th>
+                                    <th>Lesson</th>
+                                    <th>Subject</th>
+                                    <th>Issue Date</th>
+                                    <th>Due Date</th>
+                                    <th>Est Time</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-late">
+                                <!-- Homework items will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Not Submitted Section -->
+                <div class="homework-section">
+                    <div class="homework-header status-not-submitted collapsed">
+                        <span>
+                            <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px; margin-right: 8px;">
+                                <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
+                            </svg>
+                            Not Submitted
+                        </span>
+                        <span id="count-not-submitted">0</span>
+                    </div>
+                    <div class="homework-content collapsed" id="content-not-submitted">
+                        <table class="homework-table">
+                            <thead>
+                                <tr>
+                                    <th>More Info</th>
+                                    <th>Homework Name</th>
+                                    <th>Teacher Name</th>
+                                    <th>Lesson</th>
+                                    <th>Subject</th>
+                                    <th>Issue Date</th>
+                                    <th>Due Date</th>
+                                    <th>Est Time</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-not_submitted">
+                                <!-- Homework items will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Submitted Section -->
+                <div class="homework-section">
+                    <div class="homework-header status-submitted collapsed">
+                        <span>
+                            <svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true" style="width: 20px; height: 20px; margin-right: 8px;">
+                                <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
+                            </svg>
+                            Submitted
+                        </span>
+                        <span id="count-submitted">0</span>
+                    </div>
+                    <div class="homework-content collapsed" id="content-submitted">
+                        <table class="homework-table">
+                            <thead>
+                                <tr>
+                                    <th>More Info</th>
+                                    <th>Homework Name</th>
+                                    <th>Teacher Name</th>
+                                    <th>Lesson</th>
+                                    <th>Subject</th>
+                                    <th>Issue Date</th>
+                                    <th>Due Date</th>
+                                    <th>Est Time</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-submitted">
+                                <!-- Homework items will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="footer">
+            <p id="versioninfo" class="version"></p>
+        </footer>
+    </div>
+
+    <!-- Homework Info Popup (outside main-content to avoid blur) -->
+    <div class="homeworkInfo" id="homeworkInfo">
+        <div class="homeworkInfo-content">
+            <span class="homeworkInfo-close" id="homeworkInfo-close">&times;</span>
+            <h2 id="homeworkInfo-title">Homework Title</h2>
+            <div id="homeworkInfo-details"></div>
+        </div>
+    </div>
+
+    <script src="/cdn/js/dash/dash.js"></script>
+    <script src="/cdn/js/dash/CORS.js"></script>
+    <script src="/cdn/js/dash/homework.js"></script>
+</body>
+</html>

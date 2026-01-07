@@ -1,19 +1,23 @@
 /* 
-    ------ CORS.js ------
     - Why?
-      > Classcharts has VERY strict CORS rules <
-      > so this gets around them, but Im cheap <
-      > and I dont want to pay for more worker <
-      > usage so this fixes that               <
-    -  
+      Classcharts has VERY strict CORS rules
+      so this gets around them, but Im cheap
+      and I dont want to pay for more worker
+      usage so this fixes that              
+    --------------------------------------------
+    - There are two workers in use, one primary
+      one connected to the frontend, and a 
+      backup. I don't expect to need more then
+      this but its a possibility.
 */ 
+const DEBUG = false; // MAKE ABSOLUTELY SURE THIS IS FALSE BEFORE PUSHING. It just shows debug logs
 
 const WORKERS = [
     'https://api.classchartspro.qzz.io',
     'https://api.classchartspro2.workers.dev/'
 ];
 
-// Cookie helpers
+// cookie stuff
 function getCookie(name) {
     const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
     return match ? match[2] : null;
@@ -25,7 +29,7 @@ function setCookie(name, value, hours = 1) {
     document.cookie = name + '=' + value + '; expires=' + expires.toUTCString() + '; path=/';
 }
 
-// Test if a worker responds with pong
+// Make sure the worker responds with pong, if not, return false
 async function pingWorker(workerUrl) {
     try {
         const response = await fetch(workerUrl + '/ping', {
@@ -38,26 +42,26 @@ async function pingWorker(workerUrl) {
         const data = await response.json();
         return data.pong === true;
     } catch (err) {
-        console.log(`Worker ${workerUrl} ping failed:`, err.message);
+        if (DEBUG) console.log(`[DEBUG]: Worker ${workerUrl} ping failed:`, err.message);
         return false;
     }
 }
 
-// Find first working worker from the list
+// Get the first worker in the WORKERS list, then STOP
 async function findWorkingWorker() {
-    console.log('Finding working CORS worker...');
+    if (DEBUG) console.log('[DEBUG]: Finding working CORS worker...');
     
     for (const worker of WORKERS) {
-        console.log(`Testing worker: ${worker}`);
+        if (DEBUG) console.log(`[DEBUG]: Testing worker: ${worker}`);
         const isAlive = await pingWorker(worker);
         
         if (isAlive) {
-            console.log(`✓ Worker ${worker} is responding`);
+            if (DEBUG) console.log(`[DEBUG]: Worker ${worker} is responding`);
             return worker;
         }
     }
     
-    console.error('All workers failed to respond!');
+    if (DEBUG) console.error('[DEBUG]: All workers failed to respond!');
     return null;
 }
 
@@ -72,7 +76,7 @@ async function getWorkingWorker(forceRefresh = false) {
             if (isStillAlive) {
                 return cached;
             } else {
-                console.log('Cached worker is down, finding new one...');
+                if (DEBUG) console.log('[DEBUG]: Cached worker is down, finding new one...');
             }
         }
     }
@@ -95,17 +99,32 @@ async function initializeWorker() {
     currentWorker = await getWorkingWorker();
     
     if (!currentWorker) {
-            console.error(`%cAPI MANAGER%cError: No working api endpoints available!`,
-                "background: #0b8300ff; color: white; border-radius: 20px 0px 0px 20px; padding: 2px 4px;",
-                "background: #ff0000ff; color: white; border-radius: 0 20px 20px 0; padding: 2px 4px;",
-                "color: white;"
-            );
-        // Could show user-facing error here
-    } else {
-        console.log("%cAPI MANAGER%c No session token, skipping ping", 
-            "background: #0b8300ff; border-radius: 20px; color: white; padding: 2px 4px;", 
+        console.error(`%cAPI MANAGER%cError: No working api endpoints available!`,
+            "background: #0b8300ff; color: white; border-radius: 20px 0px 0px 20px; padding: 2px 4px;",
+            "background: #ff0000ff; color: white; border-radius: 0 20px 20px 0; padding: 2px 4px;",
             "color: white;"
         );
+
+        // Display an error to the user
+        const popup = document.getElementById("popup");             
+        const mainContent = document.getElementById("main-content"); 
+        if (!popup) return;
+        const header = popup.querySelector("h1");                   
+        if (header) header.textContent = "Warning";                 
+        const paragraph = popup.querySelector("p");                 
+        if (paragraph) paragraph.innerText = "No working api endpoints available\nThe app is unable to retrieve data.";   
+        const btn = popup.querySelector("a");                       
+        if (btn) btn.textContent = "Okay!";
+        popup.style.display = "block";                              
+        mainContent.classList.add("blur");                          
+                                                                
+        const agreeBtn = popup.querySelector("#popup-agree");       
+        if (agreeBtn) {                                             
+            agreeBtn.addEventListener("click", () => {              
+                popup.style.display = "none";                       
+                mainContent.classList.remove("blur");               
+            });                                                     
+        }
     }
     
     return currentWorker;
@@ -122,7 +141,7 @@ async function fetchThroughWorker(url, options = {}) {
     }
     
     try {
-        const proxyUrl = currentWorker + '/?url=' + encodeURIComponent(url);
+        const proxyUrl = currentWorker + '/?url=' + url;
         const response = await fetch(proxyUrl, options);
         
         // If we get a 429 or 5xx error, the worker might be exhausted
@@ -132,7 +151,7 @@ async function fetchThroughWorker(url, options = {}) {
             
             if (currentWorker) {
                 // Retry with new worker
-                const retryUrl = currentWorker + '/?url=' + encodeURIComponent(url);
+                const retryUrl = currentWorker + '/?url=' + url;
                 return await fetch(retryUrl, options);
             }
         }
@@ -149,8 +168,8 @@ async function fetchThroughWorker(url, options = {}) {
         currentWorker = await getWorkingWorker(true);
         
         if (currentWorker) {
-            console.log('Retrying with new worker...');
-            const retryUrl = currentWorker + '/?url=' + encodeURIComponent(url);
+            if (DEBUG) console.log('[DEBUG]: Retrying with new worker...');
+            const retryUrl = currentWorker + '/?url=' + url;
             return await fetch(retryUrl, options);
         }
         

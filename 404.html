@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
-    <link rel="shortcut icon" type="image/x-icon" href="/cdn/img/Logo.png">
-    <title>Home | ClassCharts Pro</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/cdn/img/LogoTB.png">
+    <title>404 | ClassCharts Pro</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/cdn/css/main.css">
+    <link rel="stylesheet" id="theme-css" href="/cdn/css/basic-dark.css">
     <script src="/cdn/js/theme.js"></script>
     <script src="/cdn/js/disclaimer.js"></script>
     <script src="/cdn/js/version.js"></script>
 </head>
-<body>
+<body style="visibility: hidden;">
     <disclaimer id="disclaimer">
         <div class="disclaimer-content">
             <h1 class="header">DISCLAIMER</h1>
@@ -22,21 +22,33 @@
         </div>
     </disclaimer>
 
-    <container id="main-content">
+    <div class="container" id="main-content">
         <h1 class="title">404</h1>
         <h2 class="tagline">This page was not found</h2>
-        <h3 id="urlbox"></h3>
-        <a class="cta-btn" href="/">Go Back</a>
+        <h3 id="URLBOX"></h3>
+        <a class="btn" href="/">Go Home</a>
 
         <footer class="footer">
             <p id="versioninfo" class="version"></p>
         </footer>
-    </container>
+    </div>
     <script>
-        const urlbox = document.getElementById("urlbox")
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlBox = document.getElementById('URLBOX');
+            const params = new URLSearchParams(window.location.search);
+            const missing = params.get('url');
 
-        if (urlbox) {
-            urlbox.innerText = window.location.origin + window.location.pathname
-        }
+            let errorUrl;
+
+            if (missing) {
+                errorUrl = window.location.origin + missing;
+            } else {
+                errorUrl = "Unknown";
+            }
+
+            if (urlBox) {
+                urlBox.innerText = "Page: " + errorUrl;
+            }
+        });
     </script>
 </body>

@@ -47,7 +47,7 @@ function login(event) {
         "recaptcha-token": "no-token-available"
     });
 
-    fetch("https://api.classchartspro.qzz.io/login", {
+    fetch("https://api.classchartspro2.workers.dev/login", {
         method: "POST",
         body: payload,
         headers: {

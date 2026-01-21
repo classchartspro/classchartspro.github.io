@@ -13,7 +13,6 @@
 const DEBUG = false; // MAKE ABSOLUTELY SURE THIS IS FALSE BEFORE PUSHING. It just shows debug logs
 
 const WORKERS = [
-    'https://api.classchartspro.qzz.io',
     'https://api.classchartspro2.workers.dev/'
 ];
 
